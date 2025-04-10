@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+    <link rel="stylesheet" href="stylecheckout.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.32.0"></script>
+</head>
+<body style="background-color: white">
+
+  <br>
+  <br>
+  <br>
+  <br>
+  <div class="container" style="width: 700px;" >
+    <section class="p-3 p-md-4" style="background-color: rgb(37, 36, 36);">
+    <div class="row d-flex justify-content-center">
+            </div>
+              <p class="fw-bold mb-3">Adicionar cartão:</p>
+              <div data-mdb-input-init class="form-outline mb-2">
+                <input type="text" id="nome" class="form-control form-control-lg"/>
+                <label class="form-label" for="formControlLgXsd">Nome completo</label>
+              </div>
+              <div class="row mb-4">
+                <div class="col-7">
+                  <div data-mdb-input-init class="form-outline">
+                    <input type="text" id="nmr_cartao" class="form-control form-control-lg"/>
+                    <label class="form-label" for="formControlLgXM">Número do cartão</label>
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div data-mdb-input-init class="form-outline">
+                    <input type="password" id="vencimento" class="form-control form-control-lg"
+                      placeholder="A/M/D" />
+                    <label class="form-label" for="formControlLgExpk">Vencimento</label>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div data-mdb-input-init class="form-outline">
+                    <input type="password" id="cvv" class="form-control form-control-lg"/>
+                    <label class="form-label" for="formControlLgcvv">CVV</label>
+                  </div>
+                </div>
+              </div>
+              <button data-mdb-button-init data-mdb-ripple-init class="btn btn-success btn-lg btn-block" onclick="concluir_pagamento()">PAGAR</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    </section>
+  </div>
+
+  <script>
+        const supabase = window.supabase.createClient(
+        "https://eubqzrxuzsiardlcapan.supabase.co",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1YnF6cnh1enNpYXJkbGNhcGFuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI5ODc3OTMsImV4cCI6MjA1ODU2Mzc5M30.lau6BVIJrjucF0b3wQHkrWJchd8MmeSCOX3PMuCWPx4"
+    );
+
+        async function concluir_pagamento(nome, nmr_cartao, vencimento, cvv){
+
+        const infos_cliente = {
+          Nome: nome,
+          Numero: nmr_cartao,
+          Vencimento: vencimento,
+          Cvv: cvv,
+          };
+
+        const { data, error } = await supabase
+          .from('infos') // Nome da tabela no Supabase
+          .insert([infos_cliente]);
+        }
+        
+        
+  </script>
+
+</body>
+</html>
