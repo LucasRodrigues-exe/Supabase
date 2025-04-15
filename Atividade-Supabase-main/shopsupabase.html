@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="assets\css\pricing-plan.css">
+  <link href="https://fonts.googleapis.com/css?family=Karla:400,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.materialdesignicons.com/4.8.95/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Carrinho de Compras</title>
+  <!-- Biblioteca Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.32.0"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .product { margin: 10px 0; }
+    .product label { display: block; font-weight: bold; }
+    .product input { margin-top: 5px; }
+  </style>
+</head>
+<body style="background-color: #212529; color: white;">
+  <div class="container">
+    <h5 class="text-center pricing-table-subtitle">NOSSOS PLANOS</h5>
+    <h1 class="text-center pricing-table-title">CONFIRA OS PREÇOS</h1>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card pricing-card pricing-plan-basic">
+          <div class="card-body">
+            <i class="mdi mdi-cube-outline pricing-plan-icon"></i>
+            <p class="pricing-plan-title">Básico</p>
+            <h3 class="pricing-plan-cost ml-auto">R$7,90</h3>
+            <ul class="pricing-plan-features">
+              <li>Duração limitada</li>
+              <li>Máximo de usuários: 1</li>
+              <li>Regiões limitadas</li>
+              <li><br></li>
+            </ul>
+            <button onclick="addToCart(1, 'Plano Básico', 7.90)" style=" background-color: white; border:none;"><a href="#!" class="btn pricing-plan-purchase-btn">COMPRAR</a></button>
+            
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card pricing-card pricing-card-highlighted  pricing-plan-pro">
+          <div class="card-body">
+              <i class="mdi mdi-trophy pricing-plan-icon"></i>
+            <p class="pricing-plan-title">Pro (DESTAQUE)</p>
+            <h3 class="pricing-plan-cost ml-auto">R$13,90</h3>
+            <ul class="pricing-plan-features">
+              <li>Duração ilimitada</li>
+              <li>Máximo de usuários: 1</li>
+              <li>Regiões ilimitadas</li>
+              <li>Proteção contra ameaças PRO</li>
+            </ul>
+            <button onclick="addToCart(1, 'Plano Pro', 13.90)" style=" background-color: white; border:none;"><a href="#!" class="btn pricing-plan-purchase-btn">COMPRAR</a></button>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card pricing-card pricing-plan-enterprise">
+          <div class="card-body">
+            <i class="mdi mdi-wallet-giftcard pricing-plan-icon"></i>
+            <p class="pricing-plan-title">Empresa</p>
+            <h3 class="pricing-plan-cost ml-auto">R$69,90</h3>
+            <ul class="pricing-plan-features">
+              <li>Duração ilimitada</li>
+              <li>Máximo de usuários: 10</li>
+              <li>Regiões ilimitadas</li>
+              <li>Proteção contra ameaças PRO</li>
+            </ul>
+            <button onclick="addToCart(1, 'Plano Empresa', 69.90)" style=" background-color: white; border:none;"><a href="#!" class="btn pricing-plan-purchase-btn">COMPRAR</a></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    // Inicializa o cliente do Supabase
+    const supabase = window.supabase.createClient(
+            "https://nmtuzunvplpykvqjzzop.supabase.co",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5tdHV6dW52cGxweWt2cWp6em9wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI5OTEzNTksImV4cCI6MjA1ODU2NzM1OX0.vjwr9u9jaxGSeM-cSkApzyLUJ27NHaB82vqSIHKGyxw"
+        );
+  
+    // Função para adicionar produtos ao carrinho
+    async function addToCart(productId, productName, productPrice) {
+      const quantity = 1;
+  
+      if (!quantity || quantity <= 0) {
+        alert('Por favor, insira uma quantidade válida.');
+        return;
+      }
+  
+      // Dados a serem enviados para a tabela no Supabase
+      const cartItem = {
+        product_id: productId,
+        product_plano: productName,
+        product_price: productPrice,
+        quantity: parseInt(quantity),
+      };
+  
+      // Faz a inserção na tabela do Supabase
+      const { data, error } = await supabase
+        .from('cart') // Nome da tabela no Supabase
+        .insert([cartItem]);
+  
+      if (error) {
+        console.error('Erro ao adicionar ao carrinho:', error);
+        alert('Erro ao adicionar ao carrinho. Veja o console para mais detalhes.');
+      } else {
+        console.log('Produto adicionado ao carrinho:', data);
+        window.location.href = "current-plan.html";
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="assets/css/current-plan.css">
+  <link href="https://fonts.googleapis.com/css?family=Karla:400,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Plano Atual</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.32.0"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .plan-container { max-width: 600px; margin: 0 auto; text-align: center; }
+    .card { margin-top: 20px; }
+    .card-header { font-weight: bold; }
+    .btn { margin-top: 15px; }
+  </style>
+</head>
+<body style="background-color: #212529;">
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <div class="container plan-container">
+    <h1 class="text-center" style="color: white; font-weight: 600;">MEU PLANO ATUAL</h1>
+    <div id="plan-card" class="card">
+      <div class="card-header">Detalhes do Plano</div>
+      <div class="card-body">
+        <p><strong>Plano:</strong> <span id="plan-name">Carregando...</span></p>
+        <p><strong>Preço:</strong> R$<span id="plan-price">0.00</span></p>
+        <button class="btn btn-primary btn-block" onclick="deletarUltimoItem(); updatePlan();" >Alterar Plano</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Inicializa o cliente do Supabase
+    const supabase = window.supabase.createClient(
+      "https://nmtuzunvplpykvqjzzop.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5tdHV6dW52cGxweWt2cWp6em9wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI5OTEzNTksImV4cCI6MjA1ODU2NzM1OX0.vjwr9u9jaxGSeM-cSkApzyLUJ27NHaB82vqSIHKGyxw"
+    );
+
+    // Função para carregar o plano atual do Supabase
+    async function loadCurrentPlan() {
+      const { data, error } = await supabase
+        .from('cart')
+        .select('*')
+        .order('id', { ascending: false }) // Seleciona o último plano adicionado
+        .limit(1);
+
+      if (error) {
+        console.error('Erro ao carregar o plano atual:', error);
+        alert('Erro ao carregar o plano atual. Veja o console para mais detalhes.');
+      } else if (data.length > 0) {
+        const currentPlan = data[0];
+        document.getElementById('plan-name').textContent = currentPlan.product_plano;
+        document.getElementById('plan-price').textContent = currentPlan.product_price.toFixed(2);
+        document.getElementById('plan-quantity').textContent = currentPlan.quantity;
+      } else {
+        alert('Nenhum plano ativo encontrado.');
+      }
+    }
+
+    // Função para alterar o plano (redireciona para a página de escolha de planos)
+    async function updatePlan() {
+    try {
+        console.log("Iniciando a atualização do plano...");
+        // Sua lógica de atualização do plano aqui
+        console.log("Plano atualizado com sucesso!");
+    } catch (err) {
+        console.error("Erro ao atualizar o plano:", err);
+    }
+}
+
+async function deletarUltimoItem() {
+    try {
+        console.log("Iniciando a exclusão do último item...");
+        const { data: lastItem, error: fetchError } = await supabase
+            .from('cart')
+            .select('*')
+            .order('id', { ascending: false })
+            .limit(1);
+
+        if (fetchError) {
+            console.error('Erro ao buscar o último item:', fetchError);
+            alert('Erro ao buscar o último item. Veja o console.');
+            return;
+        }
+
+        if (lastItem.length === 0) {
+            console.warn('Nenhum item encontrado para deletar.');
+            alert('Nenhum item encontrado na tabela.');
+            return;
+        }
+
+        const lastItemId = lastItem[0].id;
+
+        const { error: deleteError } = await supabase
+            .from('cart')
+            .delete()
+            .eq('id', lastItemId);
+
+        if (deleteError) {
+            console.error('Erro ao deletar o último item:', deleteError);
+            alert('Erro ao deletar o último item. Veja o console.');
+        } else {
+            window.location.href = "shopsupabase.html"; // Substitua pelo caminho correto para a página de planos
+        }
+
+        // Atualiza o plano após a exclusão
+        await updatePlan();
+    } catch (err) {
+        console.error("Erro inesperado ao deletar o último item:", err);
+    }
+}
+
+    // Carrega os dados do plano atual ao iniciar a página
+    loadCurrentPlan();
+  </script>
+</body>
+</html>
